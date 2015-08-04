@@ -2,7 +2,8 @@ Oauth2 DynamoDB v3 adapter
 ==========================
 
 [![Build Status](https://travis-ci.org/eoko/oauth2-adapter-dynamodb.svg?branch=master)](https://travis-ci.org/eoko/oauth2-adapter-dynamodb)
-[![Coverage Status](https://coveralls.io/repos/eoko/oauth2-adapter-dynamodb/badge.svg?branch=master&service=github)](https://coveralls.io/github/eoko/oauth2-adapter-dynamodb?branch=master)
+[![Code Climate](https://codeclimate.com/github/eoko/oauth2-adapter-dynamodb/badges/gpa.svg)](https://codeclimate.com/github/eoko/oauth2-adapter-dynamodb)
+[![Test Coverage](https://codeclimate.com/github/eoko/oauth2-adapter-dynamodb/badges/coverage.svg)](https://codeclimate.com/github/eoko/oauth2-adapter-dynamodb/coverage)
 
 Description
 -----------
