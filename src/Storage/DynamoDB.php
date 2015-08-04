@@ -590,7 +590,8 @@ class DynamoDB implements
      * @param $expires
      * @param $jti
      */
-    public function getJti($client_id, $subject, $audience, $expires, $jti) {
+    public function getJti($client_id, $subject, $audience, $expires, $jti)
+    {
         //TODO not use.
     }
 
