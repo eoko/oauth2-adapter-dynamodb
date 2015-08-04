@@ -43,5 +43,4 @@ script:
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run ; fi
 
 after_script:
-  - if [[ $EXECUTE_TEST_COVERAGE == 'true' ]]; then ./vendor/bin/test-reporter --stdout > build/logs/coverage.json ; fi
-  - if [[ $EXECUTE_TEST_COVERAGE == 'true' ]]; then "curl -X POST -d @build/logs/coverage.json -H 'Content-Type: application/json' -H 'User-Agent: Code Climate (PHP Test Reporter v1.0.1-dev)' https://codeclimate.com/test_reports" ; fi
+  - if [[ $EXECUTE_TEST_COVERAGE == 'true' ]]; then ./vendor/bin/test-reporter
