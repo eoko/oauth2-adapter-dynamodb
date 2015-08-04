@@ -436,6 +436,7 @@ class DynamoDB implements
 
     /**
      * Plaintext passwords are bad!  Override this for your application
+     * Alternately, set your own encryption.
      *
      * @param $user
      * @param $password
@@ -443,7 +444,11 @@ class DynamoDB implements
      */
     protected function checkPassword($user, $password)
     {
-        return $user['password'] == sha1($password);
+        return $user['password'] == $this->encryptPassword($password);
+    }
+
+    protected function encryptPassword($password) {
+        return sha1($password);
     }
 
     /**
@@ -475,7 +480,7 @@ class DynamoDB implements
     public function setUser($username, $password, $first_name = null, $last_name = null)
     {
         // do not store in plaintext
-        $password = sha1($password);
+        $password = $this->encryptPassword($password);
 
         $clientData = compact('username', 'password', 'first_name', 'last_name');
         $clientData = array_filter($clientData, function ($value) {
