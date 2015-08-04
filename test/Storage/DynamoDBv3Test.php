@@ -11,18 +11,18 @@ class DynamoDBv3Test extends PHPUnit_Framework_TestCase
     {
         $client = $this->getMockBuilder('\Aws\DynamoDb\DynamoDbClient')
             ->disableOriginalConstructor()
-            ->setMethods(array('query'))
+            ->setMethods(['query'])
             ->getMock();
 
         $return = $this->getMockBuilder('\Guzzle\Service\Resource\Model')
-            ->setMethods(array('count', 'toArray'))
+            ->setMethods(['count', 'toArray'])
             ->getMock();
 
-        $data = array(
-            'Items' => array(),
+        $data = [
+            'Items' => [],
             'Count' => 0,
             'ScannedCount'=> 0
-        );
+        ];
 
         $return->expects($this->once())
             ->method('count')
@@ -39,6 +39,5 @@ class DynamoDBv3Test extends PHPUnit_Framework_TestCase
 
         $storage = new DynamoDBv3($client);
         $this->assertNull($storage->getDefaultScope());
-
     }
 }
