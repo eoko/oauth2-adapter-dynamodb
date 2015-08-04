@@ -1,0 +1,43 @@
+{
+    "name": "eoko/oauth2/dynamodb",
+    "description":"OAuth2 dynamoDB v.3 adapter for Oauth2 Server",
+    "keywords":["oauth","oauth2","auth","dynamodb"],
+    "type":"library",
+    "license":"MIT",
+
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+
+    "authors":[
+        {
+            "name":"Brent Shaffer",
+            "email": "bshafs@gmail.com",
+            "homepage":"http://brentertainment.com"
+        },
+        {
+            "name":"Romain DARY",
+            "email": "romain.dary@eoko.fr",
+            "homepage":"http://eoko.fr"
+        }
+    ],
+    "homepage": "http://github.com/eoko/oauth2-adapter-dynamodb",
+    "require":{
+        "php": ">=5.5",
+        "aws/aws-sdk-php": "~3.2",
+        "bshaffer/oauth2-server-php": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eoko\\OAuth2\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Eoko\\OAuth2\\Test\\": "test/"
+        }
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "~4.0",
+        "mockery/mockery": "0.9.*"
+    }
+}
