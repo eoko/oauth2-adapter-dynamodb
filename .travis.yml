@@ -43,4 +43,4 @@ script:
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run ; fi
 
 after_script:
-  - if [[ $EXECUTE_TEST_COVERAGE == 'true' ]]; then ./vendor/bin/test-reporter
+  - if [[ $EXECUTE_TEST_COVERAGE == 'true' ]]; then ./vendor/bin/test-reporter ; fi
