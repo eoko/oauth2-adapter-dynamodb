@@ -43,4 +43,4 @@ script:
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run ; fi
 
 after_script:
-  - if [[ $EXECUTE_TEST_COVERAGE == 'true' ]]; then CODECLIMATE_REPO_TOKEN=c413f1cdfc666803d99edca7ccb7d1e3592a72de074cd057efbb1e3d3933662b ./vendor/bin/test-reporter ; fi
+  - if [[ $EXECUTE_TEST_COVERAGE == 'true' ]]; then ./vendor/bin/test-reporter --stdout > codeclimate.json && curl -X POST -d @codeclimate.json -H 'Content-Type: application/json' -H 'User-Agent: Code Climate (PHP Test Reporter v0.1.1)' https://codeclimate.com/test_reports" ; fi
