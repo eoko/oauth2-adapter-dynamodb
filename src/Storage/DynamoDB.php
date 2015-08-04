@@ -447,7 +447,8 @@ class DynamoDB implements
         return $user['password'] == $this->encryptPassword($password);
     }
 
-    protected function encryptPassword($password) {
+    protected function encryptPassword($password)
+    {
         return sha1($password);
     }
 
