@@ -2,10 +2,10 @@
 
 namespace Eoko\OAuth2\Test\Storage;
 
-use Eoko\OAuth2\Storage\DynamoDBv3;
+use Eoko\OAuth2\Storage\DynamoDB;
 use PHPUnit_Framework_TestCase;
 
-class DynamoDBv3Test extends PHPUnit_Framework_TestCase
+class DynamoDBTest extends PHPUnit_Framework_TestCase
 {
     public function testGetDefaultScope()
     {
@@ -37,7 +37,7 @@ class DynamoDBv3Test extends PHPUnit_Framework_TestCase
             ->method('query')
             ->will($this->returnValue($return));
 
-        $storage = new DynamoDBv3($client);
+        $storage = new DynamoDB($client);
         $this->assertNull($storage->getDefaultScope());
     }
 }

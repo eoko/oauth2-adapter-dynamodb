@@ -71,7 +71,7 @@ $dynamo = new Aws\DynamoDb\DynamoDbClient($config);
 Finally, create the storage object using the `DynamoDB` storage class:
 
 ```php
-$storage = new Eoko\OAuth2\Storage\DynamoDBv3($dynamo);
+$storage = new Eoko\OAuth2\Storage\DynamoDB($dynamo);
 // now you can perform storage functions, such as the one below
 $storage->setClientDetails($client_id, $client_secret, $redirect_uri);
 ```

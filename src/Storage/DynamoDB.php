@@ -40,7 +40,7 @@ use OAuth2\Storage\UserCredentialsInterface;
  *
  * @author Frederic AUGUSTE <frederic.auguste at gmail dot com>
  */
-class DynamoDBv3 implements
+class DynamoDB implements
     AuthorizationCodeInterface,
     AccessTokenInterface,
     ClientCredentialsInterface,
@@ -55,6 +55,10 @@ class DynamoDBv3 implements
     protected $client;
     protected $config;
 
+    /**
+     * @param $connection
+     * @param array $config
+     */
     public function __construct($connection, $config = [])
     {
         if (!($connection instanceof DynamoDbClient)) {
@@ -87,7 +91,11 @@ class DynamoDBv3 implements
         ], $config);
     }
 
-    /* OAuth2\Storage\ClientCredentialsInterface */
+    /**
+     * @param $client_id
+     * @param null $client_secret
+     * @return bool
+     */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
         $result = $this->client->getItem([
@@ -98,6 +106,10 @@ class DynamoDBv3 implements
         return $result->count() == 1 && $result["Item"]["client_secret"]["S"] == $client_secret;
     }
 
+    /**
+     * @param $client_id
+     * @return bool
+     */
     public function isPublicClient($client_id)
     {
         $result = $this->client->getItem([
@@ -112,7 +124,10 @@ class DynamoDBv3 implements
         return empty($result["Item"]["client_secret"]);
     }
 
-    /* OAuth2\Storage\ClientInterface */
+    /**
+     * @param $client_id
+     * @return array|bool
+     */
     public function getClientDetails($client_id)
     {
         $result = $this->client->getItem([
@@ -132,6 +147,15 @@ class DynamoDBv3 implements
         return $result;
     }
 
+    /**
+     * @param $client_id
+     * @param null $client_secret
+     * @param null $redirect_uri
+     * @param null $grant_types
+     * @param null $scope
+     * @param null $user_id
+     * @return bool
+     */
     public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $user_id = null)
     {
         $clientData = compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id');
@@ -147,6 +171,11 @@ class DynamoDBv3 implements
         return true;
     }
 
+    /**
+     * @param $client_id
+     * @param $grant_type
+     * @return bool
+     */
     public function checkRestrictedGrantType($client_id, $grant_type)
     {
         $details = $this->getClientDetails($client_id);
@@ -160,7 +189,10 @@ class DynamoDBv3 implements
         return true;
     }
 
-    /* OAuth2\Storage\AccessTokenInterface */
+    /**
+     * @param $access_token
+     * @return array|bool
+     */
     public function getAccessToken($access_token)
     {
         $result = $this->client->getItem([
@@ -178,6 +210,14 @@ class DynamoDBv3 implements
         return $token;
     }
 
+    /**
+     * @param \OAuth2\Storage\oauth_token $access_token
+     * @param \OAuth2\Storage\client $client_id
+     * @param \OAuth2\Storage\user $user_id
+     * @param int $expires
+     * @param null $scope
+     * @return bool
+     */
     public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null)
     {
         // convert expires to datestring
@@ -196,7 +236,10 @@ class DynamoDBv3 implements
         return true;
     }
 
-    /* OAuth2\Storage\AuthorizationCodeInterface */
+    /**
+     * @param $code
+     * @return array|bool
+     */
     public function getAuthorizationCode($code)
     {
         $result = $this->client->getItem([
@@ -215,6 +258,16 @@ class DynamoDBv3 implements
         return $token;
     }
 
+    /**
+     * @param \OAuth2\OpenID\Storage\authorization|string $authorization_code
+     * @param mixed|\OAuth2\OpenID\Storage\client $client_id
+     * @param mixed|\OAuth2\OpenID\Storage\user $user_id
+     * @param string $redirect_uri
+     * @param int $expires
+     * @param null $scope
+     * @param null $id_token
+     * @return bool
+     */
     public function setAuthorizationCode($authorization_code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null)
     {
         // convert expires to datestring
@@ -233,6 +286,10 @@ class DynamoDBv3 implements
         return true;
     }
 
+    /**
+     * @param $code
+     * @return bool
+     */
     public function expireAuthorizationCode($code)
     {
         $result = $this->client->deleteItem([
@@ -243,7 +300,11 @@ class DynamoDBv3 implements
         return true;
     }
 
-    /* OAuth2\Storage\UserCredentialsInterface */
+    /**
+     * @param $username
+     * @param $password
+     * @return bool
+     */
     public function checkUserCredentials($username, $password)
     {
         if ($user = $this->getUser($username)) {
@@ -253,12 +314,20 @@ class DynamoDBv3 implements
         return false;
     }
 
+    /**
+     * @param $username
+     * @return array|bool
+     */
     public function getUserDetails($username)
     {
         return $this->getUser($username);
     }
 
-    /* UserClaimsInterface */
+    /**
+     * @param $user_id
+     * @param $claims
+     * @return array|bool
+     */
     public function getUserClaims($user_id, $claims)
     {
         if (!$userDetails = $this->getUserDetails($user_id)) {
@@ -284,6 +353,11 @@ class DynamoDBv3 implements
         return $userClaims;
     }
 
+    /**
+     * @param $claim
+     * @param $userDetails
+     * @return array
+     */
     protected function getUserClaim($claim, $userDetails)
     {
         $userClaims = [];
@@ -301,7 +375,10 @@ class DynamoDBv3 implements
         return $userClaims;
     }
 
-    /* OAuth2\Storage\RefreshTokenInterface */
+    /**
+     * @param $refresh_token
+     * @return array|bool
+     */
     public function getRefreshToken($refresh_token)
     {
         $result = $this->client->getItem([
@@ -317,6 +394,14 @@ class DynamoDBv3 implements
         return $token;
     }
 
+    /**
+     * @param $refresh_token
+     * @param $client_id
+     * @param $user_id
+     * @param $expires
+     * @param null $scope
+     * @return bool
+     */
     public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null)
     {
         // convert expires to datestring
@@ -335,6 +420,10 @@ class DynamoDBv3 implements
         return true;
     }
 
+    /**
+     * @param $refresh_token
+     * @return bool
+     */
     public function unsetRefreshToken($refresh_token)
     {
         $result = $this->client->deleteItem([
@@ -345,12 +434,22 @@ class DynamoDBv3 implements
         return true;
     }
 
-    // plaintext passwords are bad!  Override this for your application
+    /**
+     * Plaintext passwords are bad!  Override this for your application
+     *
+     * @param $user
+     * @param $password
+     * @return bool
+     */
     protected function checkPassword($user, $password)
     {
         return $user['password'] == sha1($password);
     }
 
+    /**
+     * @param $username
+     * @return array|bool
+     */
     public function getUser($username)
     {
         $result = $this->client->getItem([
@@ -366,6 +465,13 @@ class DynamoDBv3 implements
         return $token;
     }
 
+    /**
+     * @param $username
+     * @param $password
+     * @param null $first_name
+     * @param null $last_name
+     * @return bool
+     */
     public function setUser($username, $password, $first_name = null, $last_name = null)
     {
         // do not store in plaintext
@@ -384,7 +490,10 @@ class DynamoDBv3 implements
         return true;
     }
 
-    /* ScopeInterface */
+    /**
+     * @param $scope
+     * @return bool
+     */
     public function scopeExists($scope)
     {
         $scope = explode(' ', $scope);
@@ -407,6 +516,10 @@ class DynamoDBv3 implements
         return $count == count($scope);
     }
 
+    /**
+     * @param null $client_id
+     * @return null|string|void
+     */
     public function getDefaultScope($client_id = null)
     {
         $result = $this->client->query([
@@ -433,7 +546,11 @@ class DynamoDBv3 implements
         return;
     }
 
-    /* JWTBearerInterface */
+    /**
+     * @param $client_id
+     * @param $subject
+     * @return bool
+     */
     public function getClientKey($client_id, $subject)
     {
         $result = $this->client->getItem([
@@ -448,6 +565,10 @@ class DynamoDBv3 implements
         return $token['public_key'];
     }
 
+    /**
+     * @param $client_id
+     * @return bool|void
+     */
     public function getClientScope($client_id)
     {
         if (!$clientDetails = $this->getClientDetails($client_id)) {
@@ -461,17 +582,35 @@ class DynamoDBv3 implements
         return;
     }
 
-    public function getJti($client_id, $subject, $audience, $expires, $jti)
-    {
+    /**
+     * @todo
+     * @param $client_id
+     * @param $subject
+     * @param $audience
+     * @param $expires
+     * @param $jti
+     */
+    public function getJti($client_id, $subject, $audience, $expires, $jti) {
         //TODO not use.
     }
 
+    /**
+     * @todo
+     * @param $client_id
+     * @param $subject
+     * @param $audience
+     * @param $expires
+     * @param $jti
+     */
     public function setJti($client_id, $subject, $audience, $expires, $jti)
     {
         //TODO not use.
     }
 
-    /* PublicKeyInterface */
+    /**
+     * @param string $client_id
+     * @return bool
+     */
     public function getPublicKey($client_id = '0')
     {
         $result = $this->client->getItem([
@@ -486,6 +625,10 @@ class DynamoDBv3 implements
         return $token['public_key'];
     }
 
+    /**
+     * @param string $client_id
+     * @return bool
+     */
     public function getPrivateKey($client_id = '0')
     {
         $result = $this->client->getItem([
@@ -500,6 +643,10 @@ class DynamoDBv3 implements
         return $token['private_key'];
     }
 
+    /**
+     * @param null $client_id
+     * @return string
+     */
     public function getEncryptionAlgorithm($client_id = null)
     {
         $result = $this->client->getItem([
@@ -516,13 +663,18 @@ class DynamoDBv3 implements
 
     /**
      * Transform dynamodb resultset to an array.
+     *
      * @param $dynamodbResult
      * @return array $array
      */
     private function dynamo2array($dynamodbResult)
     {
         $result = [];
-        foreach ($dynamodbResult["Item"] as $key => $val) {
+
+        // Prevent inconsistent resultSet
+        $resultSet = (is_array($dynamodbResult["Item"])) ? $dynamodbResult["Item"] : [];
+
+        foreach ($resultSet as $key => $val) {
             $result[$key] = $val["S"];
             $result[] = $val["S"];
         }
