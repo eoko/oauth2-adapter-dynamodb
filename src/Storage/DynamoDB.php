@@ -680,12 +680,14 @@ class DynamoDB implements
 
         // Prevent inconsistent resultSet
         $resultSet = (is_array($dynamodbResult["Item"])) ? $dynamodbResult["Item"] : [];
-
+        
         foreach ($resultSet as $key => $val) {
-            $result[$key] = $val["S"];
-            $result[] = $val["S"];
+            if(isset($val["S"])) {
+                $result[$key] = $val["S"];
+                $result[] = $val["S"];
+            }
         }
-
+        
         return $result;
     }
 }
