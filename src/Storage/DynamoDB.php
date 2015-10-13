@@ -79,6 +79,9 @@ class DynamoDB implements
             $this->client = $connection;
         }
 
+        $config = isset($config['config']) ? $config['config'] : [];
+
+
         $this->config = array_merge([
             'client_table' => 'oauth_clients',
             'access_token_table' => 'oauth_access_tokens',
