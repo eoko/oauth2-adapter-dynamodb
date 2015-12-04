@@ -392,9 +392,13 @@ class DynamoDB implements
             return false;
         }
         $token = $this->dynamo2array($result);
-        $token['expires'] = strtotime($token['expires']);
 
-        return $token;
+        if(isset($token['expires'])) {
+            $token['expires'] = strtotime($token['expires']);
+
+            return $token;
+        }
+        return false;
     }
 
     /**
